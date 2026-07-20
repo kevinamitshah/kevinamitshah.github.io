@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro';
+
+const timeline = [
+  {
+    period: '2020 – 2024',
+    title: 'B.Tech, Chemical Engineering — IIT Gandhinagar',
+    org: 'Minors in Computer Science & Artificial Intelligence',
+    note: 'A non-circuit branch, and a deliberate route into computing. I took the CS and AI minors and pointed my electives, research, and internships at how intelligent systems actually get built.',
+    mark: false,
+  },
+  {
+    period: '2022 – 2023',
+    title: 'Early proof — ML & data-science internships',
+    org: 'InfyU Labs · PUMA',
+    note: 'Fruit-quality QA models at an agri-tech startup, then e-commerce demand forecasting at PUMA (LSTM with Bayesian optimization), which earned a pre-placement offer. First time watching models meet real operations.',
+    mark: false,
+  },
+  {
+    period: 'Jan – Jun 2024',
+    title: 'Research — LLM code-similarity',
+    org: 'IIT Gandhinagar · FSE 2024',
+    note: 'Probed how robust code-generating LLMs are to prompt mutations. Accepted as a poster at ACM FSE 2024. Where my interest in how these models actually behave got serious.',
+    mark: false,
+  },
+  {
+    period: 'Feb – Jul 2024',
+    title: 'SDE Intern — Capillary',
+    org: 'Capillary Technologies',
+    note: 'Built a RAG Slackbot for the product team that 45+ people came to rely on. The internship that turned into a decision.',
+    mark: false,
+  },
+  {
+    period: 'Aug 2024',
+    title: 'Joined the aiRA founding team — as a Product Analyst',
+    org: 'Capillary Technologies',
+    note: 'One of the first ~5 people on aiRA, Capillary’s agentic AI platform, at proof-of-concept stage. I came in on the product side and taught myself into the engineering.',
+    mark: true,
+  },
+  {
+    period: '2025',
+    title: 'Promoted to SDE-1',
+    org: 'aiRA · Capillary',
+    note: 'The analyst-to-engineer move, made official — and the start of owning systems, not just features.',
+    mark: true,
+  },
+  {
+    period: '2026',
+    title: 'Promoted to SDE-2',
+    org: 'aiRA · Capillary',
+    note: 'Feature → system → platform. Now working on turning aiRA from Capillary-bound into an orchestration layer across a customer’s stack.',
+    mark: true,
+  },
+];
+
+const principles = [
+  {
+    h: 'Problems before technologies',
+    p: 'The question is never “how do I use the newest framework?” It’s “what’s the simplest system that solves this well?” Sometimes that’s an LLM. Sometimes it’s SQL. Sometimes it’s deleting code.',
+  },
+  {
+    h: 'Own it end to end',
+    p: 'A feature isn’t finished when it compiles. It’s finished when it survives production and the next engineer can understand it. Ownership is a mindset, not an assignment.',
+  },
+  {
+    h: 'Reason from first principles',
+    p: 'I’d rather understand why a system exists, what constrained it, and what breaks it than copy an architecture because it’s popular.',
+  },
+  {
+    h: 'Optimize for impact, not output',
+    p: 'Lines of code aren’t achievements. Problems solved are. Every decision should answer: what measurably got better because this exists?',
+  },
+  {
+    h: 'Build systems, not features',
+    p: 'Features disappear; systems compound. The best work leaves the next problem easier to solve.',
+  },
+  {
+    h: 'Simplicity is the advantage',
+    p: 'Clarity over cleverness. Simple usually costs more understanding up front and far less pain forever.',
+  },
+];
+---
+
+<Base
+  title="Journey — Kevin A. Shah"
+  description="From Chemical Engineering at IIT Gandhinagar to founding-team AI engineer — a path chosen on purpose."
+>
+  <main class="container">
+    <header class="page-head">
+      <p class="eyebrow">Journey</p>
+      <h1>I chose this path on purpose.</h1>
+      <p class="lead muted">
+        I’m an AI engineer on the founding team of aiRA, Capillary’s agentic AI platform. I didn’t
+        arrive here by default. I studied Chemical Engineering at IIT Gandhinagar — a non-circuit
+        branch — routed myself toward AI deliberately, then walked into industry as a product analyst
+        and taught myself into engineering, earning a promotion each year.
+      </p>
+      <p class="muted" style="margin-top:1rem;">
+        I think of a career less as a sequence of jobs and more as the slow accumulation of
+        engineering judgment. Most of what’s below was chosen, or grabbed, for what it would teach me.
+      </p>
+    </header>
+
+    <section class="section">
+      <p class="section-label">The path</p>
+      <ul class="timeline">
+        {
+          timeline.map((t) => (
+            <li class:list={[{ mark: t.mark }]}>
+              <div class="period">{t.period}</div>
+              <div class="t-title">{t.title}</div>
+              <div class="t-org">{t.org}</div>
+              <p class="t-note">{t.note}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section">
+      <p class="section-label">How I think about engineering</p>
+      <ul class="principles">
+        {
+          principles.map((pr) => (
+            <li>
+              <h3>{pr.h}</h3>
+              <p>{pr.p}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p style="margin-top:2rem;">
+        <a class="link" href="/philosophy">The fuller version — why I build →</a>
+      </p>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Beyond the work</p>
+      <div class="beyond">
+        <p>
+          Outside engineering, I’m an athlete — or I keep insisting on being one. I played football
+          through school and for IIT Gandhinagar’s inter-IIT team. I’ve since reconstructed the ACL in
+          both knees, on different legs, about two years apart: the first in November 2023, the second
+          — with a meniscus tear — in September 2025. Between the two surgeries I ran three
+          half-marathons, including the Tuffman Bengaluru and the Apollo Delhi, and had started
+          training for a full one. I’m back in rehab now, working a return-to-sport protocol toward
+          playing again.
+        </p>
+        <p>
+          Rehab has taught me more about patience and honest progress than almost anything else. You
+          can’t rush a healing ligament and you can’t fake the milestones — and it’s not lost on me how
+          much that resembles the engineering I care about: long games, compounding effort, and no
+          shortcuts that don’t eventually cost you.
+        </p>
+        <p>
+          I also sing Indian classical music and play the keyboard. It’s the part of the day that
+          isn’t optimizing for anything, and I’d like to keep it that way.
+        </p>
+        <p class="figure-note">Photos from the pitch and the road — coming soon.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <p>
+        <a class="link" href="/work">See the work →</a>
+      </p>
+    </section>
+  </main>
+</Base>

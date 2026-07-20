@@ -1,0 +1,418 @@
+/* =========================================================================
+   Design tokens
+   Change the accent in ONE place (--accent) to re-theme the whole site.
+   Light is the default; [data-theme="dark"] overrides the same variables.
+   ========================================================================= */
+
+:root {
+  /* type */
+  --font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+
+  /* light palette — warm off-white / near-black */
+  --bg: #fbfaf7;
+  --bg-subtle: #f2efe8;
+  --text: #1b1a17;
+  --text-muted: #6c6860;
+  --text-faint: #98938a;
+  --border: #e6e2d8;
+  --accent: #b4531f;        /* terracotta — used sparingly */
+  --accent-hover: #97430f;
+  --selection: rgba(180, 83, 31, 0.16);
+
+  /* layout */
+  --measure: 46rem;         /* reading width */
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+:root[data-theme='dark'] {
+  --bg: #14130f;
+  --bg-subtle: #1d1b15;
+  --text: #ece8df;
+  --text-muted: #9c978b;
+  --text-faint: #6f6a5f;
+  --border: #2c2a22;
+  --accent: #e0895c;
+  --accent-hover: #eda079;
+  --selection: rgba(224, 137, 92, 0.20);
+}
+
+/* =========================================================================
+   Reset / base
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100dvh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection { background: var(--selection); }
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; height: auto; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* =========================================================================
+   Layout primitives
+   ========================================================================= */
+
+.container {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* =========================================================================
+   Typography helpers
+   ========================================================================= */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 480;
+  line-height: 1.12;
+  letter-spacing: -0.018em;
+  font-optical-sizing: auto;
+}
+
+.lead {
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.muted { color: var(--text-muted); }
+
+/* Inline text links (used in prose, not nav) */
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.link:hover { color: var(--accent-hover); border-color: var(--accent); }
+
+/* =========================================================================
+   Page header block (used on About, Work index, Philosophy, Writing)
+   ========================================================================= */
+
+.page-head {
+  padding-top: clamp(3rem, 10vh, 6rem);
+  padding-bottom: 2.5rem;
+}
+.page-head h1 {
+  font-size: clamp(2.1rem, 5.5vw, 3.25rem);
+  margin: 0.9rem 0 1.25rem;
+  max-width: 18ch;
+}
+.page-head .lead { max-width: 52ch; }
+
+/* =========================================================================
+   Timeline (About / Journey)
+   ========================================================================= */
+
+.timeline {
+  list-style: none;
+  position: relative;
+  margin: 1rem 0 0;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--border);
+}
+.timeline li {
+  position: relative;
+  padding: 0 0 2.25rem 0.75rem;
+}
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: calc(-1.5rem - 1px);
+  top: 0.45rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 2px solid var(--text-faint);
+  transform: translateX(-50%);
+}
+.timeline li.mark::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.timeline .period {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.timeline .t-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 0.15rem;
+  letter-spacing: -0.01em;
+}
+.timeline .t-org { color: var(--accent); font-size: 0.95rem; }
+.timeline .t-note { color: var(--text-muted); margin-top: 0.35rem; font-size: 0.98rem; }
+
+/* =========================================================================
+   Principles (distilled philosophy on About)
+   ========================================================================= */
+
+.principles {
+  list-style: none;
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+}
+.principles h3 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+.principles p { color: var(--text-muted); }
+@media (min-width: 40rem) {
+  .principles { grid-template-columns: 1fr 1fr; gap: 2rem 2.5rem; }
+}
+
+/* "Beyond the work" understated block */
+.beyond {
+  border-left: 2px solid var(--border);
+  padding-left: 1.5rem;
+  margin-top: 1.5rem;
+}
+.beyond p + p { margin-top: 1rem; }
+.beyond .figure-note {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  font-style: italic;
+  margin-top: 1.25rem;
+}
+
+/* =========================================================================
+   Section divider + section label
+   ========================================================================= */
+
+.section {
+  padding-top: 3rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+
+/* =========================================================================
+   Work index list
+   ========================================================================= */
+
+.work-list { border-top: 1px solid var(--border); }
+.work-item {
+  display: block;
+  padding: 1.6rem 0.25rem;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left 0.2s ease;
+}
+.work-item:hover { padding-left: 0.75rem; }
+.work-item .proves {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.work-item .w-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 480;
+  letter-spacing: -0.015em;
+  margin: 0.25rem 0 0.35rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.work-item:hover .w-title { color: var(--accent); }
+.work-item .w-title .arrow { transition: transform 0.2s ease; }
+.work-item:hover .w-title .arrow { transform: translateX(4px); }
+.work-item .w-tagline { color: var(--text-muted); }
+
+/* =========================================================================
+   Article (case study + blog post body)
+   ========================================================================= */
+
+.article-head { padding-top: clamp(2.5rem, 8vh, 5rem); }
+.article-head .kicker {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.article-head .kicker .proves { color: var(--accent); }
+.article-head h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0.9rem 0 0.75rem;
+}
+.article-head .tagline {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  color: var(--text-muted);
+  line-height: 1.45;
+  max-width: 50ch;
+}
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+.stack .chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* Prose */
+.prose { margin-top: 2.5rem; }
+.prose > * + * { margin-top: 1.25rem; }
+.prose h2 {
+  font-size: 1.55rem;
+  margin-top: 2.75rem;
+  margin-bottom: 0.25rem;
+}
+.prose h3 { font-size: 1.2rem; margin-top: 2rem; }
+.prose p, .prose li { color: var(--text); }
+.prose a { color: var(--accent); border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.prose a:hover { border-color: var(--accent); }
+.prose ul, .prose ol { padding-left: 1.35rem; }
+.prose li + li { margin-top: 0.5rem; }
+.prose li::marker { color: var(--text-faint); }
+.prose strong { font-weight: 600; }
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 1.45;
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--bg-subtle);
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+}
+.prose pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+.prose pre code { background: none; padding: 0; }
+.prose hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+/* Article footer nav */
+.article-foot {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+/* =========================================================================
+   Writing / post list
+   ========================================================================= */
+
+.post-list { list-style: none; border-top: 1px solid var(--border); }
+.post-item { border-bottom: 1px solid var(--border); padding: 1.35rem 0.25rem; transition: padding-left 0.2s ease; }
+.post-item:hover { padding-left: 0.75rem; }
+.post-item a { display: block; }
+.post-item .p-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  display: flex;
+  gap: 0.75rem;
+}
+.post-item .p-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 480;
+  margin: 0.25rem 0;
+}
+.post-item:hover .p-title { color: var(--accent); }
+.post-item .p-desc { color: var(--text-muted); font-size: 0.98rem; }

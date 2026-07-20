@@ -1,0 +1,74 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  tagline?: string;
+  proves?: string;
+  meta?: string[];
+  stack?: string[];
+  links?: { label: string; href: string }[];
+  backHref?: string;
+  backLabel?: string;
+}
+const {
+  title,
+  description,
+  tagline,
+  proves,
+  meta = [],
+  stack = [],
+  links = [],
+  backHref = '/work',
+  backLabel = 'All work',
+} = Astro.props;
+
+const metaLine = meta.filter(Boolean).join('  ·  ');
+---
+
+<Base title={`${title} — Kevin A. Shah`} description={description ?? tagline}>
+  <main class="container">
+    <header class="article-head">
+      {
+        (proves || metaLine) && (
+          <p class="kicker">
+            {proves && <span class="proves">{proves}</span>}
+            {proves && metaLine && <span aria-hidden="true">·</span>}
+            {metaLine && <span>{metaLine}</span>}
+          </p>
+        )
+      }
+      <h1>{title}</h1>
+      {tagline && <p class="tagline">{tagline}</p>}
+      {
+        stack.length > 0 && (
+          <div class="stack">
+            {stack.map((s) => (
+              <span class="chip">{s}</span>
+            ))}
+          </div>
+        )
+      }
+      {
+        links.length > 0 && (
+          <div class="stack" style="margin-top:1rem;">
+            {links.map((l) => (
+              <a class="link" href={l.href} target="_blank" rel="noopener">
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <article class="prose">
+      <slot />
+    </article>
+
+    <nav class="article-foot">
+      <a class="link" href={backHref}>← {backLabel}</a>
+    </nav>
+  </main>
+</Base>

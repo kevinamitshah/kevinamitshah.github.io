@@ -1,0 +1,37 @@
+---
+title: A full platform for an NGO, shipped solo
+tagline: A public site plus a portal that runs an entire program's lifecycle — application to logistics to payments — with automated messaging at every step. Built and deployed end to end, alone.
+proves: Range
+role: Solo — full stack, in production
+timeframe: Personal project · Live
+stack: [Next.js 14, FastAPI, Supabase, Gupshup, Docker, Railway]
+links:
+  - { label: 'prabhupremitrust.com', href: 'https://www.prabhupremitrust.com/' }
+  - { label: 'The portal', href: 'https://portal.prabhupremitrust.com/login' }
+order: 4
+---
+
+## The problem
+
+Prabhu Premi Trust is a women-led NGO. They run a pilgrimage program — the CC7 "Jatra" — with a real participant lifecycle: people apply, get selected, receive credentials, manage a profile and status, get assigned rooms and logistics, and submit payment proofs. All of it was being coordinated by hand, across messages and spreadsheets, and none of it scaled.
+
+## What I built
+
+An end-to-end system, alone, in production:
+
+- a **static public marketing site**, and
+- a **portal** that runs the full participant lifecycle: application → selection → credentials → profile and status → rooms and logistics → payment proofs — with **automated WhatsApp and email at each step**, so nobody has to manually chase updates.
+
+The stack is deliberately unremarkable, because that's the point. Next.js 14 on the front, FastAPI behind it, and Supabase for Postgres, auth, and storage. Messaging goes through Gupshup for WhatsApp and Gmail SMTP for email, with Google Forms in the intake path. It's deployed as three Docker services on Railway, with the marketing site behind Caddy.
+
+## Why it matters to me as an engineer
+
+On a platform team you own a slice. Here I owned all of it — auth, database, storage, third-party integrations, containerized deployment, DNS, and a real lifecycle with real users on the other end. There's no one to hand the hard part to.
+
+That's exactly why I keep it here: it's proof I can take something from nothing to running-in-production without a platform underneath me. The cause is meaningful, but the engineering is the reason it's on this page — a small, honest example of end-to-end ownership.
+
+## What I'd change
+
+Solo full-stack means every decision is a trade against your own time, so I optimized hard for boring and reliable over interesting: managed Postgres and auth instead of rolling my own, a handful of Docker services instead of a clever architecture. That restraint is why it still runs without me babysitting it.
+
+If it grows, the next step is real observability. Right now I find out something's wrong the way a solo operator does — by hearing about it.

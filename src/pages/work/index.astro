@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const items = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base
+  title="Work — Kevin A. Shah"
+  description="Selected systems, told as problem, decision, and outcome."
+>
+  <main class="container">
+    <header class="page-head">
+      <p class="eyebrow">Work</p>
+      <h1>A few systems, and the thinking behind them.</h1>
+      <p class="lead muted">
+        Not a project grid. Each of these is one problem, the constraints that shaped it, the calls
+        I made, and what actually happened. Where I can't share a number, the reasoning is the point.
+      </p>
+    </header>
+
+    <div class="work-list">
+      {
+        items.map((it) => (
+          <a class="work-item" href={`/work/${it.id}`}>
+            <span class="proves">{it.data.proves}</span>
+            <span class="w-title">
+              {it.data.title}
+              <span class="arrow" aria-hidden="true">→</span>
+            </span>
+            <span class="w-tagline">{it.data.tagline}</span>
+          </a>
+        ))
+      }
+    </div>
+  </main>
+</Base>

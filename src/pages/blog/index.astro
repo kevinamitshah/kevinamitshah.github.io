@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { socials } from '../../config/site';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const substack = socials.find((s) => s.name === 'substack');
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<Base
+  title="Writing — Kevin A. Shah"
+  description="Notes and deep-dives on building AI systems in production."
+>
+  <main class="container">
+    <header class="page-head">
+      <p class="eyebrow">Writing</p>
+      <h1>Notes from building AI in production.</h1>
+      <p class="lead muted">
+        Long deep-dives and short notes, as they come. Posts live here on the site;
+        {substack && (<a class="link" href={substack.href} target="_blank" rel="noopener">Substack</a>)}
+        is where you can subscribe.
+      </p>
+    </header>
+
+    {
+      posts.length === 0 ? (
+        <p class="muted">First posts landing soon.</p>
+      ) : (
+        <ul class="post-list">
+          {posts.map((p) => (
+            <li class="post-item">
+              <a href={`/blog/${p.id}`}>
+                <span class="p-meta">
+                  <span>{fmt(p.data.date)}</span>
+                  <span>{p.data.kind === 'note' ? 'Note' : 'Essay'}</span>
+                </span>
+                <span class="p-title">{p.data.title}</span>
+                <span class="p-desc">{p.data.description}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </main>
+</Base>

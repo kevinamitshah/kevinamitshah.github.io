@@ -1,0 +1,54 @@
+---
+title: A compiler for audiences, not another text-to-SQL
+tagline: Why I replaced a hallucination-prone natural-language-to-SQL pipeline with a small, typed language the model assembles instead of guesses at.
+proves: Judgment
+role: Design & implementation
+timeframe: aiRA · Capillary
+stack: [DSL design, RAG, MCP, Databricks, Thrift, Python]
+order: 1
+---
+
+## The problem
+
+Marketing teams need to describe an audience in plain language — "customers in Bengaluru who bought at least twice in the last 90 days but nothing in the last 30" — and get a real segment back, running against live customer data.
+
+The first version did the obvious thing. Hand the request and the schema to an LLM, ask it for SQL, run it. It demoed beautifully. In production it did not hold.
+
+The model would invent columns that sounded plausible, join tables that shouldn't be joined, and generate SQL that was *subtly* wrong — right shape, wrong meaning — in ways nobody caught until the wrong customers received a campaign. Each miss got patched with another line in the prompt, and each patch made the next failure harder to predict.
+
+So I stopped treating it as a prompt problem. Free-form SQL is an enormous surface to be wrong on, and there was nothing standing between the model's guess and a live query. The real question wasn't "how do we make the model better at SQL." It was "why are we letting the model write SQL at all."
+
+## The constraints
+
+- **Correctness is non-negotiable.** A wrong audience means the wrong people get messaged. This isn't a ranking you can be approximately right about.
+- **It still has to be expressive.** Marketers compose genuinely non-trivial conditions. A rigid template that only handles five shapes would just push people back to asking an analyst.
+- **It has to run where the data already lives** — the existing Databricks setup and the Audience Manager execution path, not a parallel universe I'd have to maintain.
+- **The model has to use it *reliably*,** not just when the stars align. Occasional correctness is the same as unreliable.
+
+## What I chose, and why
+
+Instead of asking the model for the final SQL, I gave it a smaller language to speak.
+
+I designed a compiler-inspired DSL for audience definitions. The model composes a structured expression; that compiles to an AST; the AST lowers to Thrift; Thrift becomes SQL that executes asynchronously through the existing Audience Manager. Every stage is inspectable and validated. The model never touches raw SQL — it works one level up, in a grammar where the invalid states are much harder to even express.
+
+The piece I'm most convinced by is *how the model meets the language*. Exposing raw grammar rules to an LLM invites exactly the improvisation I was trying to kill. So I built a **typed Python abstraction** over the DSL: a set of constructs the model assembles the way you'd compose objects in code, rather than free text it emits. The types teach it *how to build* a valid audience instead of hoping it recalls the syntax. Composability survives; hallucination mostly doesn't, because a hallucinated construct doesn't type-check.
+
+Context matters as much as grammar. I built a **star-schema context layer** — fact tables, column metadata, the relationships between entities and their dimensions — and fed it through RAG so the model reasons about the actual data model instead of a guess of it. Execution is upload-based on Databricks with strict metadata validation at the door.
+
+Finally I split reasoning from construction: a **two-agent MCP workflow** where an Analytics Reasoning Agent works out schema and intent, and a Configuration Agent composes the DSL and creates the audience. One agent decides what the user means; the other is responsible for saying it correctly.
+
+## The trade-offs
+
+Building a DSL isn't free. I took on a grammar, a compiler path, and a context layer to maintain — real complexity a prompt doesn't have. The bet was that *bounded, inspectable* complexity is far cheaper than *unbounded* correctness bugs in production, and that a system whose failures are legible beats one whose failures are surprising. I'd make that trade again.
+
+The place I keep an eye on is expressiveness. A DSL can only say what it's designed to say, so every genuinely new audience shape is a deliberate language extension, not a prompt tweak. That's partly a feature — it forces each new capability to be real and tested — but it does mean the language's design is now something I own.
+
+## The outcome
+
+Defining a bulk audience went from a couple of hours of manual work to a couple of minutes. More importantly, the hallucinations that made the first version untrustworthy went away — not because the model got smarter, but because the system stopped giving it room to improvise. It composes valid constructs or it fails loudly and early, long before anything runs against customer data.
+
+## What I'd change
+
+I'd invest earlier in making the language self-describing, so extending it is a smaller ceremony than it is today. And I'd formalize how new constructs get proposed and reviewed, because a DSL is only as good as the discipline around growing it.
+
+The broader lesson stuck with me: when a model is unreliable at a task, the highest-leverage move is often to *change the task* — narrow what it's allowed to say — rather than keep coaxing the same open-ended prompt.

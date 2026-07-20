@@ -1,0 +1,41 @@
+---
+title: Turning two years of config work into a plugin the team builds on
+tagline: I compressed the config-automation framework into a Claude Code plugin, so an engineer writes a few Python functions and the agent rebuilds the rest.
+proves: Leverage
+role: Design & implementation
+timeframe: aiRA · Capillary
+stack: [Claude Code plugins, Agents, Hooks, pytest, Python]
+order: 3
+---
+
+## The context
+
+Most of aiRA's configuration power runs through a pattern the team built up over roughly two years. At its core: the model writes Python, the Python runs in a sandbox, we infer JSON from the result, post-process it, generate an API payload, and drive the UI. It's a capable pipeline. It's also a lot to hold in your head — and every new config module meant an engineer re-learning the same machinery before writing the part that was actually new.
+
+That's the tell that something should be abstracted. When the same *shape* of work keeps getting rebuilt by hand, the work isn't the feature — the framework is.
+
+## The problem
+
+Onboarding onto config work was slow. A single config could take three to four weeks end to end, most of it spent re-implementing the standard pipeline — post-processing, payload generation — rather than the novel logic. Six-month interns especially lost weeks to plumbing before they were productive.
+
+## What I built
+
+I abstracted the accumulated config-agent patterns — sandbox execution, inference views, post-processing, payload generation — into a **Claude Code plugin**: bundled skills, agents, and hooks that carry the framework internals so nobody has to rebuild them.
+
+Now an engineer writes only the Python functions and mocks the payloads in pytest. The agent regenerates the full post-processing and payload pipeline by learning from existing configs, and it enforces the team's coding conventions at PR-review time. It supports the workflows people actually have — create, copy-config, edit, and mid-task — not just a clean-slate happy path.
+
+## The trade-offs
+
+An abstraction that learns from existing configs is powerful and slightly dangerous: it's only as good as the examples it generalizes from, so a messy precedent can propagate. I leaned on the PR-review hooks to hold the line on conventions, and on pytest mocks to keep the contract explicit — the engineer still *states* what the payload should be, so the agent has something concrete to be correct against.
+
+The other cost is that the plugin itself is now a thing to maintain and version. The leverage only stays positive if it keeps pace with the framework it wraps; a stale abstraction is worse than none, because people trust it.
+
+## The outcome
+
+End-to-end config build time dropped from three to four weeks to one to two, with most of the pipeline automated. The clearest signal is *who* it helps most: interns and newer SDEs — the people who used to lose the most time to the machinery — now spend that time on the logic that's actually theirs.
+
+## Reflection
+
+This is the work I'm proudest of, and it isn't a feature — nobody outside the team ever sees it. But it's the difference between shipping something once and raising the floor for everyone who ships after you.
+
+If I were starting over, I'd design the "teach the agent from examples" loop around a *curated* set of reference configs from the beginning, rather than the organic set it learns from now — so the quality it generalizes from is a decision I made, not an accident of history.
