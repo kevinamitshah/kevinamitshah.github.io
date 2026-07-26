@@ -13,6 +13,10 @@ interface Props {
 }
 const { title = site.title, description = site.description } = Astro.props;
 const year = new Date().getFullYear();
+
+// Absolute URL of *this* page, resolved against `site` in astro.config.mjs.
+// Used for both canonical and og:url so every page reports its own address.
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -23,13 +27,15 @@ const year = new Date().getFullYear();
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={site.url} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:url" content={canonical} />
+    <!-- `summary` until there's an og:image to fill a large card. -->
+    <meta name="twitter:card" content="summary" />
 
     <!-- Set theme before first paint to avoid a flash -->
     <script is:inline>
